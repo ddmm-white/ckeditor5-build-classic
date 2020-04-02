@@ -47,7 +47,7 @@ export default class InlineWidgetUI extends Plugin {
   }
 
   _getTextAreaElement() {
-  	return global.document.getElementById(textAreaId);
+  	return global.document.getElementById('ck-widget-textarea');
   }
 
   _createInlineWidgetView() {
