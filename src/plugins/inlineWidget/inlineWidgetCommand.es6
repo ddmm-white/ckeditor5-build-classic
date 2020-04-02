@@ -25,8 +25,8 @@ export default class InlineWidgetCommand extends Command {
     );
 
     const selectedWidget = getSelectedInlineWidgetModel(selection);
-    this.data = selectedEquation
-      ? selectedEquation.getAttribute('data')
+    this.data = selectedWidget
+      ? selectedWidget.getAttribute('data')
       : null;
   }
 }
