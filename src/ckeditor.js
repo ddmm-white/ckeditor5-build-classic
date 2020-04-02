@@ -80,6 +80,7 @@ ClassicEditor.defaultConfig = {
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
+			'inlineWidget',
 			'undo',
 			'redo'
 		]

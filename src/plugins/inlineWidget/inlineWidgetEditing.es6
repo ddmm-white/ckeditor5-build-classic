@@ -2,6 +2,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
+import InlineWidgetCommand from './inlineWidgetCommand.es6';
+
 export default class InlineWidgetEditing extends Plugin {
   static get requires() {
     return [Widget];
@@ -12,6 +14,9 @@ export default class InlineWidgetEditing extends Plugin {
   }
 
   init() {
+    const editor = this.editor;
+    editor.commands.add('widget', new InlineWidgetCommand(editor));
+
     this._defineSchema();
     this._defineConverters();
   }
@@ -23,7 +28,7 @@ export default class InlineWidgetEditing extends Plugin {
       allowWhere: '$text',
       isInline: true,
       isObject: true,
-		allowAttributes: ['data']
+      allowAttributes: ['data']
     });
   }
 
@@ -35,7 +40,7 @@ export default class InlineWidgetEditing extends Plugin {
       view: {
         name: 'span',
         attributes: {
-          classes: ['inlineWidget']
+          class: 'ck-inline-widget'
         }
       },
       model: (viewElement, modelWriter) => {
@@ -50,7 +55,7 @@ export default class InlineWidgetEditing extends Plugin {
     conversion.for('editingDowncast').elementToElement({
       model: 'inlineWidget',
       view: (modelItem, viewWriter) => {
-        const widgetElement = this._createEditingView(
+        const widgetElement = this._createInlineWidgetEditingView(
           modelItem,
           viewWriter
         );
@@ -61,14 +66,14 @@ export default class InlineWidgetEditing extends Plugin {
     // Model -> Data
     conversion.for('dataDowncast').elementToElement({
       model: 'inlineWidget',
-      view: this._createView
+      view: this._createInlineWidgetView
     });
   }
 
-	_createEditingView(modelItem, viewWriter) {
+  _createInlineWidgetEditingView(modelItem, viewWriter) {
     const data = modelItem.getAttribute('data');
 
-    const view = viewWriter.createContainerElement('div', {
+    const inlineWidgetView = viewWriter.createContainerElement('div', {
       style: 'user-select: none; display: inline-block;'
     });
 
@@ -76,24 +81,26 @@ export default class InlineWidgetEditing extends Plugin {
       domDocument
     ) {
       const domElement = this.toDomElement(domDocument);
-		domElement.innerHTML = `<span>${data}</span>`
+      domElement.innerHTML = `<span>${data}</span>`;
       return domElement;
     });
 
-    viewWriter.insert(viewWriter.createPositionAt(view, 0), uiElement);
+    viewWriter.insert(viewWriter.createPositionAt(inlineWidgetView, 0), uiElement);
 
-    return view;
+    return inlineWidgetView;
   }
 
-	_createView(modelItem, viewWriter) {
+  _createInlineWidgetView(modelItem, viewWriter) {
     const data = modelItem.getAttribute('data');
-    const view = viewWriter.createContainerElement('span');
+    const inlineWidgetView = viewWriter.createContainerElement('span', {
+      class: 'ck-inline-widget'
+    });
 
     viewWriter.insert(
-      viewWriter.createPositionAt(view, 0),
+      viewWriter.createPositionAt(inlineWidgetView, 0),
       viewWriter.createText(data)
     );
 
-    return view;
+    return inlineWidgetView;
   }
 }
