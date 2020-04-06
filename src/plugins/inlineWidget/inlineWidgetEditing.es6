@@ -73,11 +73,11 @@ export default class InlineWidgetEditing extends Plugin {
   _createInlineWidgetEditingView(modelItem, viewWriter) {
     const data = modelItem.getAttribute('data');
 
-    const inlineWidgetView = viewWriter.createContainerElement('div', {
-      style: 'user-select: none; display: inline-block;'
+    const inlineWidgetView = viewWriter.createContainerElement('span', {
+      style: 'user-select: none;'
     });
 
-    const uiElement = viewWriter.createUIElement('div', null, function(
+    const uiElement = viewWriter.createUIElement('span', null, function(
       domDocument
     ) {
       const domElement = this.toDomElement(domDocument);
