@@ -1,5 +1,5 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { toWidget, viewToModelPositionOutsideModelElement } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import InlineWidgetCommand from './inlineWidgetCommand.es6';
@@ -19,6 +19,11 @@ export default class InlineWidgetEditing extends Plugin {
 
     this._defineSchema();
     this._defineConverters();
+
+    editor.editing.mapper.on(
+    	'viewToModelPosition',
+		viewToModelPositionOutsideModelElement(editor.model, viewElement => viewElement.hasClass('ck-inline-widget'))
+	);
   }
 
   _defineSchema() {
@@ -74,7 +79,8 @@ export default class InlineWidgetEditing extends Plugin {
     const data = modelItem.getAttribute('data');
 
     const inlineWidgetView = viewWriter.createContainerElement('span', {
-      style: 'user-select: none;'
+      style: 'user-select: none;',
+	  class: 'ck-inline-widget'
     });
 
     const uiElement = viewWriter.createUIElement('span', null, function(
